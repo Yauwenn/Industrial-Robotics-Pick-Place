@@ -41,4 +41,8 @@ function [q, qdot, qddot, t] = plan_trajectory(start_angles, target_angles, dura
     % theta(t) = a0 + a1*t + a2*t^2 + a3*t^3 
     % and show how the boundary conditions (velocity = 0 at start/end) 
     % are solved in your section of the report document.
+    "Testing pang...."
+
 end
+
+
