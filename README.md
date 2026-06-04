@@ -38,6 +38,13 @@ Look at the Command Window at the bottom of the screen. Type this exactly and hi
 
 It will ask for your GitHub Username and Password.
 
+*If no ask username or password* 
+*Type in commmand window* 
+!git status
+!git add [your file name], eg. !git add build_robot.m
+!git commit -m "update [your file name] file", !git commit -m "update build robot file"
+*If still solve, copy your error in command window and ask AI*
+
 Username: Your GitHub name.
 
 Password: PASTE YOUR TOKEN HERE. (Note: When you paste it, the screen will stay blank for security reasons. It is there, just hit Enter!)
