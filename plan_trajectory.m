@@ -1,5 +1,5 @@
 function [q, qdot, qddot, t] = plan_trajectory(start_angles, target_angles, duration, steps)
-    % PLAN_TRAJECTORY Generates a smooth joint-space trajectory
+    % PLAN_TRAJECTORY Generates a smooth joint-space cubic trajectory
     %
     % Inputs:
     %   start_angles  - 3x1 vector of starting joint angles [rad]
@@ -8,41 +8,58 @@ function [q, qdot, qddot, t] = plan_trajectory(start_angles, target_angles, dura
     %   steps         - Number of waypoints to generate
     %
     % Outputs:
-    %   q     - Matrix of joint angles over time
-    %   qdot  - Matrix of joint velocities over time
-    %   qddot - Matrix of joint accelerations over time
-    %   t     - Time vector
+    %   q     - 3xsteps matrix of joint angles over time
+    %   qdot  - 3xsteps matrix of joint velocities over time
+    %   qddot - 3xsteps matrix of joint accelerations over time
+    %   t     - 1xsteps time vector
     
     %% =======================================================
-    %  TODO 1: SETUP TIME VECTOR AND WAYPOINTS
+    %  SETUP TIME VECTOR
     %% =======================================================
-    % Create an array of time points from 0 to 'duration'
     t = linspace(0, duration, steps);
     
-    % The start and end times for the waypoints
-    tPoints = [0, duration];
-    
-    % Combine the start and target angles into a single matrix
-    waypoints = [start_angles, target_angles];
-    
-    %% =======================================================
-    %  TODO 2: GENERATE THE CUBIC POLYNOMIAL TRAJECTORY
-    %% =======================================================
-    % This matches Dr. Abdo's Week 9 lecture on Cubic Trajectories!
-    % It ensures velocity and acceleration start and end at 0.
-    
-    [q, qdot, qddot] = cubicpolytraj(waypoints, tPoints, t);
+    % Initialize output matrices to store values for each joint over time
+    num_joints = length(start_angles);
+    q = zeros(num_joints, steps);
+    qdot = zeros(num_joints, steps);
+    qddot = zeros(num_joints, steps);
     
     %% =======================================================
-    %  REPORT REQUIREMENT REMINDER
+    %  ANALYTICAL CUBIC POLYNOMIAL TRAJECTORY GENERATION
     %% =======================================================
-    % NOTE FOR REPORT: Dr. Abdo wants to see the math behind this!
-    % Make sure you write out the formula: 
-    % theta(t) = a0 + a1*t + a2*t^2 + a3*t^3 
-    % and show how the boundary conditions (velocity = 0 at start/end) 
-    % are solved in your section of the report document.
-    "Testing pang...."
-
+    % Formula according to Dr. Abdo's Lecture:
+    %   theta(t) = a0 + a1*t + a2*t^2 + a3*t^3
+    %
+    % Boundary conditions for point-to-point motion:
+    %   theta(0)        = theta_i       (start_angles)
+    %   theta(duration) = theta_f       (target_angles)
+    %   theta_dot(0)    = 0             (starts from rest)
+    %   theta_dot(dur)  = 0             (comes to a stop)
+    %
+    % Solving these equations yields the following analytical coefficients:
+    %   a0 = theta_i
+    %   a1 = 0
+    %   a2 = 3 * (theta_f - theta_i) / (duration^2)
+    %   a3 = -2 * (theta_f - theta_i) / (duration^3)
+    
+    tf = duration; % Final time abbreviation
+    
+    for i = 1:num_joints
+        theta_i = start_angles(i);
+        theta_f = target_angles(i);
+        
+        % Calculate coefficients for the current joint
+        a0 = theta_i;
+        a1 = 0;
+        a2 = (3 * (theta_f - theta_i)) / (tf^2);
+        a3 = (-2 * (theta_f - theta_i)) / (tf^3);
+        
+        % Compute position, velocity, and acceleration profiles across time vector t
+        q(i, :)     = a0 + a1.*t + a2.*t.^2 + a3.*t.^3;
+        qdot(i, :)  = a1 + 2*a2.*t + 3*a3.*t.^2;
+        qddot(i, :) = 2*a2 + 6*a3.*t;
+    end
 end
+
 
 
