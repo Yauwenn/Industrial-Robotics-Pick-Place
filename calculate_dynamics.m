@@ -1,43 +1,34 @@
 function [torques] = calculate_dynamics(robot, q, qdot, qddot)
-    % CALCULATE_DYNAMICS Computes the required motor torques
-    %
-    % Inputs:
-    %   robot - The 3DOF rigidBodyTree object (from Member 1)
-    %   q     - Current joint angles [theta1; theta2; theta3]
-    %   qdot  - Current joint velocities [vel1; vel2; vel3]
-    %   qddot - Current joint accelerations [accel1; accel2; accel3]
-    %
-    % Output:
-    %   torques - 3x1 vector of required torques for each motor
-    
-    %% =======================================================
-    %  TODO 1: SET THE ENVIRONMENT
-    %% =======================================================
-    % We need to tell the robot which way gravity is pulling so it 
-    % knows how much weight it is fighting against.
-    % Assuming the Z-axis points UP, gravity pulls DOWN at 9.81 m/s^2.
-    robot.Gravity = [0, 0, -9.81];
-    
-    %% =======================================================
-    %  TODO 2: CALCULATE INVERSE DYNAMICS
-    %% =======================================================
-    % This function calculates the exact torques required for the 
-    % motors to achieve the requested positions (q), velocities (qdot), 
-    % and accelerations (qddot), taking into account the masses Member 1 set.
-    
-    % Ensure inputs are column vectors for the toolbox
-    q = q(:);
-    qdot = qdot(:);
-    qddot = qddot(:);
-    
-    torques = inverseDynamics(robot, q, qdot, qddot);
-    
-    %% =======================================================
-    %  REPORT REQUIREMENT REMINDER
-    %% =======================================================
-    % NOTE FOR REPORT: While this one line of code perfectly simulates 
-    % the dynamics, Dr. Abdo will want to see the mathematical derivation 
-    % in your report. Make sure you write out the Euler-Lagrange equations 
-    % (Week 7) on paper to include in your documentation!
+% CALCULATE_DYNAMICS Computes the required motor torques for the 3DOF robot.
+%
+% Inputs:
+%   robot - 3DOF rigidBodyTree object from build_robot.m
+%   q     - Joint angles [theta1; theta2; theta3] in radians
+%   qdot  - Joint velocities [theta1_dot; theta2_dot; theta3_dot] in rad/s
+%   qddot - Joint accelerations [theta1_ddot; theta2_ddot; theta3_ddot] in rad/s^2
+%
+% Output:
+%   torques - 3x1 vector of required motor torques [tau1; tau2; tau3] in N.m
+
+%% 1. Set Gravity
+% Z-axis is assumed to point upward, so gravity acts downward.
+
+robot.Gravity = [0 0 -9.81];
+
+%% 2. Ensure inputs are column vectors
+% Member 1 built the robot using DataFormat = 'column'.
+
+q     = q(:);
+qdot  = qdot(:);
+qddot = qddot(:);
+
+%% 3. Calculate inverse dynamics torque
+% General robot dynamics form:
+%
+%   tau = M(q)qddot + C(q,qdot)qdot + G(q)
+%
+% inverseDynamics calculates the required torque at each joint.
+
+torques = inverseDynamics(robot, q, qdot, qddot);
 
 end
