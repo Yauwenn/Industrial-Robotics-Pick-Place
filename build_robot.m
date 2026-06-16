@@ -126,7 +126,7 @@ function robot = build_robot()
 
     % Joint 2 rotates about the X-axis.
     % This follows your provided joint axis value [1, 0, 0].
-    jnt2.JointAxis = [1 0 0];
+    jnt2.JointAxis = [0 1 0];
 
     % Set Joint 2 rotation limits
     jnt2.PositionLimits = jnt2_limits;
@@ -163,7 +163,7 @@ function robot = build_robot()
 
     % Joint 3 rotates about the X-axis.
     % This follows your provided joint axis value [1, 0, 0].
-    jnt3.JointAxis = [1 0 0];
+    jnt3.JointAxis = [0 1 0];
 
     % Set Joint 3 rotation limits
     jnt3.PositionLimits = jnt3_limits;
