@@ -30,9 +30,9 @@ qddot = qddot(:);
 % inverseDynamics calculates the required torque at each joint.
 
 % If no external force is provided (e.g., robot is empty-handed), default to zero forces
-    if nargin < 5
-        external_force = zeros(6, robot.NumBodies); 
-    end
+if nargin < 5
+    external_force = zeros(6, robot.NumBodies); 
+end
 
 % Calculate the exact torque required at each joint
 torques = inverseDynamics(robot, q, qdot, qddot, external_force);
