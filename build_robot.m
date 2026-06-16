@@ -67,8 +67,8 @@ function robot = build_robot()
     % Therefore, we first enter the values in degrees, then convert to radians.
 
     jnt1_limits_deg = [-180, 180];   % Joint 1 can rotate 360 degrees
-    jnt2_limits_deg = [0, 90];       % Joint 2 rotation limit
-    jnt3_limits_deg = [0, 90];       % Joint 3 rotation limit
+    jnt2_limits_deg = [-150, 150];       % Joint 2 rotation limit
+    jnt3_limits_deg = [-150, 150];       % Joint 3 rotation limit
 
     % Convert joint limits from degrees to radians
     jnt1_limits = deg2rad(jnt1_limits_deg);
