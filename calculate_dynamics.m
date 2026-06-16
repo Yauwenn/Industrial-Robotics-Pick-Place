@@ -1,4 +1,4 @@
-function [torques] = calculate_dynamics(robot, q, qdot, qddot)
+function [torques] = calculate_dynamics(robot, q, qdot, qddot, external_force)
 % CALCULATE_DYNAMICS Computes the required motor torques for the 3DOF robot.
 %
 % Inputs:
