@@ -1,4 +1,4 @@
-function [q, qdot, qddot, t] = plan_trajectorys(start_angles, target_angles, duration, steps)
+function [q, qdot, qddot, t] = plan_trajectory(start_angles, target_angles, duration, steps)
     %% PLAN_TRAJECTORY Generates and plots a smooth joint-space quintic trajectory
 
     % Inputs:
@@ -66,8 +66,8 @@ function [q, qdot, qddot, t] = plan_trajectorys(start_angles, target_angles, dur
 end
 
 %% Test (Replace plan_trajectory with other name to prevent error)
-start_pos = [0; 0; 0];       % Starting angles for Joint 1, 2, 3
-target_pos = [1.5; -0.8; 1.2]; % Target angles
-total_time = 3.0;             % Move takes 3 seconds
-num_points = 100;             % Resolution
-[q, qdot, qddot, t] = plan_trajectorys(start_pos, target_pos, total_time, num_points);
+% start_pos = [0; 0; 0];       % Starting angles for Joint 1, 2, 3
+% target_pos = [1.5; -0.8; 1.2]; % Target angles
+% total_time = 3.0;             % Move takes 3 seconds
+% num_points = 100;             % Resolution
+% [q, qdot, qddot, t] = plan_trajectory(start_pos, target_pos, total_time, num_points);
