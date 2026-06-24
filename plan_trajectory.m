@@ -60,5 +60,3 @@ function [q, qdot, qddot, t] = plan_trajectory(start_angles, target_angles, dura
         qddot(i, :) = 2*a2 + 6*a3.*t;
     end
 end
-
-
