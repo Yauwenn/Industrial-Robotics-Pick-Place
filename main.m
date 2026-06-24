@@ -86,14 +86,10 @@ for b = 1:3
     place_angles = configPlace;
 
     % --- B. TRAJECTORY PLANNING ---
-    [q1, qdot1, qddot1, t1] = plan_trajectory(home_angles, pick_angles, duration, steps);
-    [q2, qdot2, qddot2, t2] = plan_trajectory(pick_angles, lift_pick_angles, duration, steps);
-    [q3, qdot3, qddot3, t3] = plan_trajectory(lift_pick_angles, place_angles, duration, steps);
-    [q4, qdot4, qddot4, t4] = plan_trajectory(place_angles, home_angles, duration, steps);
-
-    q_total     = [q1, q2, q3, q4];
-    qdot_total  = [qdot1, qdot2, qdot3, qdot4];
-    qddot_total = [qddot1, qddot2, qddot3, qddot4];
+    all_angles = [home_angles, pick_angles, lift_pick_angles, place_angles, home_angles];
+    stopAtWaypoint = [true, true, false, true, true];
+    
+    [q_total, qdot_total, qddot_total, t_total] = plan_trajectory(all_angles, duration, steps, stopAtWaypoint);
 
     % --- C. SIMULATION & DYNAMICS LOOP ---
     total_frames = size(q_total, 2);
