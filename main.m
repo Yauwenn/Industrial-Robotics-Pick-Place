@@ -31,13 +31,13 @@ view(45, 30);
 blocks_xyz = [
     0.4,  -0.30, 0.05;  % Green Block (Far Left, Furthest away)
     0.2,  -0.30, 0.05;  % Red Block   (Far Left, Middle)
-    0.0,  -0.30, 0.05   % Blue Block  (Far Left, Closest)
+    0,  -0.30, 0.05   % Blue Block  (Far Left, Closest)
 ];
 
 targets_xyz = [
     0.4, 0.30, 0.05;  % Green Target (Far Right, Furthest away)
     0.2, 0.30, 0.05;  % Red Target   (Far Right, Middle)
-    0.0, 0.30, 0.05   % Blue Target  (Far Right, Closest)
+    0, 0.30, 0.05   % Blue Target  (Far Right, Closest)
 ];
 
 colors = ['g', 'r', 'b']; % Colors array matching the rows above
@@ -71,18 +71,29 @@ steps = 30;   % 30 frames of animation per phase
 for b = 1:3
     disp(['--- Starting sequence for ', block_names{b}, ' Block ---']);
     
-    % --- A. INVERSE KINEMATICS FOR CURRENT BLOCK ---
+   % --- A. INVERSE KINEMATICS FOR CURRENT BLOCK ---
     current_block = blocks_xyz(b, :);
     current_target = targets_xyz(b, :);
     
-    [configPick, ~] = ik('tcp', trvec2tform(current_block), weights, home_angles);
+    % --- NEW: DYNAMIC SEEDING FOR SAFETY ---
+    % Calculate the exact angle the base needs to turn to face the block
+    base_pick_guess = atan2(current_block(2), current_block(1));
+    smart_pick_guess = [base_pick_guess; -pi/3; pi/2]; 
+    
+    % Use the smart guess instead of home_angles to prevent backwards flipping!
+    [configPick, ~] = ik('tcp', trvec2tform(current_block), weights, smart_pick_guess);
     pick_angles = configPick;
     
     lift_block_xyz = current_block + [0, 0, 0.20]; % Lift 20cm up
     [configLiftPick, ~] = ik('tcp', trvec2tform(lift_block_xyz), weights, configPick);
     lift_pick_angles = configLiftPick;
     
-    [configPlace, ~] = ik('tcp', trvec2tform(current_target), weights, configLiftPick);
+    % Calculate the exact angle the base needs to turn to face the target
+    base_place_guess = atan2(current_target(2), current_target(1));
+    smart_place_guess = [base_place_guess; -pi/3; pi/2];
+    
+    % Use the smart guess to ensure it places the block without flipping
+    [configPlace, ~] = ik('tcp', trvec2tform(current_target), weights, smart_place_guess);
     place_angles = configPlace;
 
     % --- B. TRAJECTORY PLANNING ---
